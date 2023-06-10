@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Curso {
 
-    private List<Alumno> alumnos = new ArrayList<>();
+    private final List<Alumno> alumnos = new ArrayList<>();
 
     public Curso(){
 
@@ -120,10 +120,8 @@ public class Curso {
     //---Retornar alumno por ID---
     public Alumno getAlumnoId(int id){
 
-        Alumno alumnoPorId = alumnos.stream()
+        return alumnos.stream()
                 .filter(alumno -> alumno.getId() == id).toList().get(0);
-
-        return alumnoPorId;
     }
 
     //---Eliminar un alumno---

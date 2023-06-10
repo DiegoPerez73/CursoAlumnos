@@ -11,7 +11,7 @@ public class Alumno {
 
     private static int contadorId = 0;
 
-    private int id;
+    private final int id;
     private String name;
     private String lastName;
     private int age;
