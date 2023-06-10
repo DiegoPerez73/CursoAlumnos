@@ -23,28 +23,21 @@ public class Curso {
 
     //---Mostrar Informacion completa (desordenada)---
     public void mostrarInformacion() {
-        alumnos.forEach(alumno -> {
-            System.out.println("\tNombre y apellido: " + alumno.getName() + " " + alumno.getLastName() +
+        alumnos.forEach(alumno -> System.out.println("\tNombre y apellido: " + alumno.getName() + " " + alumno.getLastName() +
                     "\n\tEdad: " + alumno.getAge() + "\n\tAdeuda materia? " + alumno.getAdeudaMateria() +
-                    "\n\tNota: " + alumno.getNota() + "\n\tAbonó? " + alumno.getAbono() + "\n");
-        });
+                    "\n\tNota: " + alumno.getNota() + "\n\tAbonó? " + alumno.getAbono() + "\n"));
     }
 
-    //---Mostrar informacion ordenada por apellido---
+    //---Mostrar informacion ordenada de alumnos por apellido ---
     public void mostrarAlumnosOrdenadosPorApellido() {
-        Collections.sort(alumnos);
-        for (Alumno alumno : alumnos) {
-            System.out.println(alumno.getLastName() + " " +  alumno.getName() + "\t - " + alumno.getAge());
-        }
+        alumnos.sort((alumno1, alumno2) -> alumno1.getLastName().compareTo(alumno2.getLastName()));
+
+        alumnos.forEach(alumno -> System.out.printf("ID %d, %s %s\t - %d años\n",alumno.getId(), alumno.getLastName(), alumno.getName(), alumno.getAge()));
     }
 
-//El método Collections.sort() requiere que los objetos en la lista implementen la interfaz Comparable
-
-//Al implementar Comparable en la clase Alumno y proporcionar una implementación del método compareTo(), los objetos Alumno
-//se vuelven comparables y se puede utilizar Collections.sort() para ordenar la lista según el orden natural definido en compareTo().
-
-//Cuando llamas a Collections.sort(alumnos), el método sort() ordena la lista alumnos en su lugar, es decir, modifica la lista
-//original en lugar de crear una nueva lista ordenada. Utiliza el algoritmo de ordenación "merge sort" para realizar la ordenación.
+    //Utilizo el alumnos.sort(), y lo ordena automaticamente. Le paso por parametro las dos variables que va a comparar, alumno 1
+    //y alumno 2. Despues le digo que a alumno1, le haga el getLastName() (getter), y con .compareTo(Aca le pongo con el otro
+    // nombre que va a comparar.)
 
 
     //---Mostrar el promedio de edad---
@@ -65,85 +58,84 @@ public class Curso {
 
     public void adeudaMaterias(){
 
-        int materiasAdeudadas = 0;
+
+        alumnos.sort(Comparator.comparing(Alumno::getName));    //Los ordeno por nombre
 
         for (Alumno alumno : alumnos){
-            if(alumno.getAdeudaMateria()){
-                materiasAdeudadas ++;
-            }
+            if(alumno.getAdeudaMateria()) System.out.printf("%s %s adeuda materias\n",alumno.getName(), alumno.getLastName());
         }
-        if(materiasAdeudadas == 0){
-            System.out.println("\nNingun alumno adeuda materias");
-        } else if (materiasAdeudadas>0) {
-            System.out.println("\nLa cantidad de alunmos que adeudan materia es: " + materiasAdeudadas);
-        }
+
+        long cantidad = alumnos.stream().filter(Alumno::getAdeudaMateria).count();
+
+        if (cantidad>0)System.out.printf("\n%d alumnos adeudan materias\n", cantidad);
+        if(cantidad == 0)System.out.println("\nNingun alumno adeuda materias");
     }
 
     //---Mostrar alumno con nota mas alta---
 
-        public void notaMasAlta(){
+    public void notaMasAlta(){
 
-            int notaMasAlta = 0;
+        alumnos.sort(Comparator.comparingInt(Alumno::getNota).reversed());
 
-            int cantidadAlumnosConNotaMasAlta = 0;
+        int notaMasAlta = alumnos.get(0).getNota();
 
-            int alumnosDesaprobados = 0;
+        List<Alumno> notaMasAltaList = alumnos.stream().filter(alumno -> alumno.getNota() == notaMasAlta).toList();
 
-            for (Alumno alumno : alumnos) {
+        System.out.printf("La nota mas alta es %d.\n", notaMasAlta);
 
-                if (alumno.getNota() > notaMasAlta) {
-                    notaMasAlta = alumno.getNota();
-                    cantidadAlumnosConNotaMasAlta = 1;
-
-                } else if (alumno.getNota() == notaMasAlta) {
-                    cantidadAlumnosConNotaMasAlta++;
-                }else if(alumno.getNota()<=6){
-                    alumnosDesaprobados++;
-                }
-            }
-
-
-            System.out.println("\nLa nota mas alta de los alumnos es: " + notaMasAlta);
-            System.out.println("Hay " + cantidadAlumnosConNotaMasAlta + " Con esa nota");
-            System.out.println("Hay " + alumnosDesaprobados + " alumnos desaprobados");
+        if(notaMasAltaList.size()>1){
+            System.out.printf("Hay %d alumnos con la nota mas alta.\n",notaMasAltaList.size());
+            notaMasAltaList.forEach(alumno -> System.out.printf("%s %s\n", alumno.getName(), alumno.getLastName()));
+        }else {
+            System.out.printf("El alumno es: %s %s", notaMasAltaList.get(0).getName(), notaMasAltaList.get(0).getName());
         }
+    }
 
     //---Mostrar si algun alumno no abono la matricula---
 
     public void mostrarSiAbonoMatricula(){
 
-        int alumnosSinAbonar = 0;
 
-        for (Alumno alumno : alumnos){
-            if(alumno.getAdeudaMateria()){
-                System.out.println("\nEl alumno " + alumno.getName() + " No abono la materia");
-                alumnosSinAbonar++;
-            }
-        }
-        if(alumnosSinAbonar>0){
-            System.out.println("\n" + alumnosSinAbonar + " alumnos no abonaron la materia");
-        } else if (alumnosSinAbonar == 0) {
-            System.out.println("\nTodos los alumnos abonaron");
+        List<Alumno> noAbonaron = alumnos.stream().filter(alumno -> !alumno.getAbono()).toList();
+        int cantNoAbono = noAbonaron.size();
+        if(cantNoAbono>1){
+            System.out.printf("%d alumnos no abonaron la matricula\n", cantNoAbono);
+            noAbonaron.forEach(alumno -> System.out.printf("%s %s\n", alumno.getName(), alumno.getLastName()));
+        } else if (cantNoAbono == 0) {
+            System.out.println("Todos los alumnos abonaron!");
+        } else if (cantNoAbono == 1) {
+            System.out.printf("%s %s no abonó la matrícula", noAbonaron.get(0).getName(), noAbonaron.get(0).getName());
         }
     }
 
+
+    //---Mostrar un alumno por ID (Lo hago para reutilizar en varios metodos ---
+    public void mostrarId(int id){
+        alumnos.stream()
+                .filter(alumno -> alumno.getId() == id)
+                .toList()
+                .forEach(alumno ->System.out.printf("ID: %d, %s %s\n",alumno.getId(),alumno.getName(),alumno.getLastName()) );
+    }
+
+    //---Retornar alumno por ID---
+    public Alumno getAlumnoId(int id){
+
+        Alumno alumnoPorId = alumnos.stream()
+                .filter(alumno -> alumno.getId() == id).toList().get(0);
+
+        return alumnoPorId;
+    }
+
     //---Eliminar un alumno---
+    public void eliminarAlumnoPorId(int id){
 
-    public void eliminarAlumnoPorApellido(String aBorrar){
+        Alumno alumnoBorrado = getAlumnoId(id);
 
-        String lastNameABorrar = null;
+        alumnos.remove(alumnoBorrado);
 
-        for(Alumno alumno : alumnos){
-            if(alumno.getLastName().equals(aBorrar)){
-                lastNameABorrar = aBorrar;
-            }
-        }
+        //  alumnos.removeIf(alumno -> alumno.getId() == id);       //Con removeIf(Si esto da TRUE, lo elimina)
 
-        System.out.println("\nVas a borrar a " + lastNameABorrar);
-
-        alumnos.removeIf(alumno -> alumno.getLastName().equals(aBorrar));   //El metodo .removeIf(elemento -> (si esto da "True", lo ELIMINA))
-
-        System.out.println("\nAlumno " + lastNameABorrar + " BORRADO\n");
+        System.out.printf("Alumno %s %s ELIMINADO\n",alumnoBorrado.getName(), alumnoBorrado.getLastName());
     }
 
 }
