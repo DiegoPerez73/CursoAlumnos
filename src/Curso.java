@@ -120,8 +120,7 @@ public class Curso {
     //---Retornar alumno por ID---
     public Alumno getAlumnoId(int id){
 
-        return alumnos.stream()
-                .filter(alumno -> alumno.getId() == id).toList().get(0);
+        return alumnos.stream().filter(alumno -> alumno.getId() == id).toList().get(0);
     }
 
     //---Eliminar un alumno---

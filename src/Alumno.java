@@ -1,12 +1,5 @@
 
 
-//En Java, la interfaz Comparable se utiliza para proporcionar una forma de comparar objetos de una clase y determinar
-// su orden natural. Al implementar la interfaz Comparable en una clase, estás indicando que los objetos de esa clase
-// son comparables entre sí.
-
-//se utiliza implements Comparable<Alumno> para indicar que los objetos Alumno pueden ser comparados entre sí. Esto significa
-// que la clase Alumno debe proporcionar una implementación del método compareTo() definido en la interfaz Comparable.
-
 public class Alumno {
 
     private static int contadorId = 0;

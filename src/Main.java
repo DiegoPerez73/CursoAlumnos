@@ -73,7 +73,6 @@ public class Main {
                     System.out.println("Abono el curso?");
                     boolean abono = scanner.nextBoolean();
 
-
                     cursoIntegracion.addAlumnos(new Alumno(nombre, apellido, edad, adeuda, nota, abono));
                     System.out.println("Alumno " + nombre + " " + apellido + " creado!");
 
@@ -132,7 +131,5 @@ public class Main {
                 case 10 -> System.out.println("Gracias por utilizar el programa de Diego Perez 2023 :)");
             }
         } while (accion != 10);
-
-
     }
 }
